@@ -49,7 +49,7 @@ clean:
 	rm -rf $(BUILD)
 
 install: jdbm.jar
-	cp $< $(TOP)/repositories/joval/components/sdk/common/rsrc/lib
+	cp $< $(TOP)/repositories/jSAF/components/provider/rsrc/lib
 
 classes: classdirs $(CLASS_FILES)
 
