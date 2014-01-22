@@ -51,7 +51,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 
@@ -144,7 +146,8 @@ public class MapFactory {
 
     private void clearFiles() throws IOException {
 	for (File f : baseDir.listFiles()) {
-	    if (f.getName().startsWith(dbkey)) {
+	    String fname = f.getName();
+	    if (fname.equals(dbkey + ".db") || fname.equals(dbkey + ".lg")) {
 		if (!f.delete()) {
 		    throw new IOException("Failed to delete file: " + f.toString());
 		}
@@ -266,7 +269,11 @@ public class MapFactory {
 	}
 
 	public Collection<V> values() {
-	    throw new UnsupportedOperationException();
+	    try {
+		return new TupleCollection<V>(tree.browse(), tree.size());
+	    } catch (IOException e) {
+		throw new RuntimeException(e);
+	    }
 	}
 
 	// Private
@@ -283,6 +290,125 @@ public class MapFactory {
 		    }
 		}
 	    }
+	}
+    }
+
+
+    static class TupleCollection<E> implements Collection<E> {
+	private TupleBrowser tuple;
+	private int size;
+
+	TupleCollection(TupleBrowser tuple, int size) {
+	    this.tuple = tuple;
+	    this.size = size;
+	}
+
+	// Implement Collection
+
+	public boolean add(E e) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean addAll(Collection<? extends E> c) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public void clear() {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean contains(Object o) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean containsAll(Collection<?> c) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean isEmpty() {
+	    return size == 0;
+	}
+
+	public Iterator<E> iterator() {
+	    return new TupleIterator<E>(tuple);
+	}
+
+	public boolean remove(Object obj) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean removeAll(Collection<?> c) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public boolean retainAll(Collection<?> c) {
+	    throw new UnsupportedOperationException();
+	}
+
+	public int size() {
+	    return size;
+	}
+
+	public Object[] toArray() {
+	    return toArray(new Object[size]);
+	}
+
+	public <T> T[] toArray(T[] a) {
+	    if (size != a.length) {
+		a = new ArrayList<T>(size).toArray(a);
+	    }
+	    Iterator<E> iter = iterator();
+	    for (int i=0; iter.hasNext(); i++) {
+		@SuppressWarnings("unchecked")
+		T t = (T)iter.next();
+		a[i] = t;
+	    }
+	    return a;
+	}
+    }
+
+    static class TupleIterator<E> implements Iterator<E> {
+	private TupleBrowser tuple;
+	private E next;
+
+	TupleIterator(TupleBrowser tuple) {
+	    this.tuple = tuple;
+	    next = increment();
+	}
+
+	private E increment() {
+	    Tuple t = new Tuple();
+	    try {
+		if (tuple.getNext(t)) {
+		    @SuppressWarnings("unchecked")
+		    E result = (E)t.getValue();
+		    return result;
+		} else {
+		    return null;
+		}
+	    } catch (IOException e) {
+		throw new RuntimeException(e);
+	    }
+	}
+
+	// Implement Iterator
+
+	public boolean hasNext() {
+	    return next != null;
+	}
+
+	public E next() {
+	    if (next == null) {
+		throw new NoSuchElementException();
+	    } else {
+		E result = next;
+		next = increment();
+		return result;
+	    }
+	}
+
+	public void remove() {
+	    throw new UnsupportedOperationException();
 	}
     }
 }
