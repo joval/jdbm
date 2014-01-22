@@ -36,7 +36,7 @@ CLASS_FILES:=$(foreach class, $(CLASSES), $(BUILD)/$(subst .,/,$(class)).class)
 PACKAGES=$(sort $(basename $(CLASSES)))
 PACKAGEDIRS=$(subst .,/,$(PACKAGES))
 
-all: classes
+all: jdbm.jar
 
 jdbm.jar: classes
 	$(JAR) cvf $@ -C $(BUILD)/ .

@@ -52,6 +52,7 @@ CLASSES=\
 	jdbm.recman.RecordHeader	\
 	jdbm.recman.TransactionManager	\
 	jdbm.recman.TranslationPage	\
+	jdbm.MapFactory	\
 	jdbm.RecordManager	\
 	jdbm.RecordManagerFactory	\
 	jdbm.RecordManagerOptions	\
