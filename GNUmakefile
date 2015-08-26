@@ -1,34 +1,11 @@
 Default: all
 
-TOP=../../..
 
-ifndef JAVA_HOME
-    JAVA_HOME=$(TOP)/tools/jdk1.6.0_26
-endif
+TOP=$(realpath .)
 
-ifeq (Windows, $(findstring Windows,$(OS)))
-    CLN=;
-else
-    CLN=:
-endif
+include $(TOP)/common.mk
 
-NULL:=
-SPACE:=$(NULL) # end of the line
-SHELL=/bin/sh
-
-JAVA=$(JAVA_HOME)/bin/java
-JAVAC=$(JAVA_HOME)/bin/javac
-JAR=$(JAVA_HOME)/bin/jar
-JAVACFLAGS=-Xlint:unchecked -deprecation
-CLASSLIB=$(JAVA_HOME)/jre/lib/rt.jar
-RSRC=rsrc
-LIBDIR=$(RSRC)/lib
-LIB=$(subst $(SPACE),$(CLN),$(filter %.jar %.zip, $(wildcard $(LIBDIR)/*)))
-BUILD=build
-SRC=src/main
-DOCS=docs
 CLASSPATH="$(CLASSLIB)$(CLN)$(LIB)$(CLN)$(SRC)"
-CWD=$(shell pwd)
 
 include classes.mk
 
