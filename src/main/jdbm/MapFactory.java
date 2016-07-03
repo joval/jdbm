@@ -170,6 +170,7 @@ public class MapFactory {
 	}
 
 	void dispose() throws IOException {
+	    clear();
 	    mgr.delete(tree.getRecid());
 	    mgr.delete(index.getRecid());
 	}
@@ -257,7 +258,19 @@ public class MapFactory {
 	}
 
 	public void clear() {
-	    throw new UnsupportedOperationException();
+	    try {
+		Tuple t = new Tuple();
+		TupleBrowser browser = index.browse();
+		while(browser.getNext(t)) {
+		    index.remove(t.getKey());
+		}
+		browser = tree.browse();
+		while(browser.getNext(t)) {
+		    tree.remove(t.getKey());
+		}
+	    } catch (IOException e) {
+		throw new RuntimeException(e);
+	    }
 	}
 
 	public Set<Map.Entry<K, V>> entrySet() {
