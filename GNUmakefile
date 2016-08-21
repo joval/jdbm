@@ -26,7 +26,7 @@ clean:
 	rm -rf $(BUILD)
 
 install: jdbm.jar
-	cp $< $(TOP)/repositories/jSAF/components/provider/rsrc/lib
+	cp $< $(TOP)/../jOVAL-Commercial/components/provider/rsrc/lib
 
 classes: classdirs $(CLASS_FILES)
 
