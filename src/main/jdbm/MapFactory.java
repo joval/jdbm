@@ -170,7 +170,7 @@ public class MapFactory {
 	}
 
 	void dispose() throws IOException {
-	    clear();
+//DAS	    clear();
 	    mgr.delete(tree.getRecid());
 	    mgr.delete(index.getRecid());
 	}
