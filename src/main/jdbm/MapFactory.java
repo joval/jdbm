@@ -39,7 +39,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Copyright 2014 (C) jOVAL.org. All Rights Reserved.
+ * Copyright 2014-2017 (C) jOVAL.org. All Rights Reserved.
  *
  * $Id: MapFactory.java,v 1.0 2014/01/21 19:20:18 solind Exp $
  */
@@ -96,8 +96,16 @@ public class MapFactory {
     private Collection<MapImpl<?, ?>> maps;
 
     private MapFactory(File baseDir, String dbkey) throws IOException {
-	this.baseDir = baseDir;
-	this.dbkey = dbkey;
+	if (baseDir == null) {
+	    throw new NullPointerException("baseDir cannot be null");
+	} else {
+	    this.baseDir = baseDir;
+	}
+	if (dbkey == null) {
+	    throw new NullPointerException("dbkey cannot be null");
+	} else {
+	    this.dbkey = dbkey;
+	}
 	String basename = new File(baseDir, dbkey).toString();
 	clearFiles();
 	mgr = RecordManagerFactory.createRecordManager(basename, PROPS);
@@ -170,7 +178,6 @@ public class MapFactory {
 	}
 
 	void dispose() throws IOException {
-//DAS	    clear();
 	    mgr.delete(tree.getRecid());
 	    mgr.delete(index.getRecid());
 	}
